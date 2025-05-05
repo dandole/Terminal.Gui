@@ -116,6 +116,7 @@ public class AttributeTests
         Assert.Equal (-1, attribute.PlatformColor);
         Assert.Equal (new Color (Color.White), attribute.Foreground);
         Assert.Equal (new Color (Color.Black), attribute.Background);
+        Assert.Equal (TextStyle.None, attribute.TextStyles);
     }
 
     [Fact]
@@ -139,6 +140,30 @@ public class AttributeTests
         // Act & Assert
         Assert.True (attribute1 == attribute2);
     }
+
+    [Fact]
+    public void EqualityOperator_ShouldReturnFalseForDifferentAttributeStyles ()
+    {
+        // Arrange
+        var attribute1 = new Attribute (Color.Red, Color.Black, TextStyle.Bold);
+        var attribute2 = new Attribute (Color.Red, Color.Black, TextStyle.None);
+
+
+        // Act & Assert
+        Assert.False (attribute1 == attribute2);
+    }
+
+    [Fact]
+    public void EqualityOperator_ShouldReturnTrueForEqualAttributeStyles ()
+    {
+        // Arrange
+        var attribute1 = new Attribute (Color.Red, Color.Black, TextStyle.Italic);
+        var attribute2 = new Attribute (Color.Red, Color.Black, TextStyle.Italic);
+
+        // Act & Assert
+        Assert.True (attribute1 == attribute2);
+    }
+
 
     [Fact]
     public void Equals_Initialized ()
@@ -344,10 +369,11 @@ public class AttributeTests
         // Arrange
         var foregroundColor = new Color (0, 0, 255);
         var backgroundColor = new Color (255, 255, 255);
-        var expectedString = $"[{foregroundColor},{backgroundColor}]";
+        var textStyles = TextStyle.Blink;
+        var expectedString = $"[{foregroundColor},{backgroundColor},{textStyles}]";
 
         // Act
-        var attribute = new Attribute (foregroundColor, backgroundColor);
+        var attribute = new Attribute (foregroundColor, backgroundColor, textStyles);
         var attributeString = attribute.ToString ();
 
         // Assert

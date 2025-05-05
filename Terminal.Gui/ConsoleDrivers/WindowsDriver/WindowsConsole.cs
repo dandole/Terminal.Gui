@@ -189,6 +189,7 @@ internal partial class WindowsConsole
                     prev = attr;
                     EscSeqUtils.CSI_AppendForegroundColorRGB (_stringBuilder, attr.Foreground.R, attr.Foreground.G, attr.Foreground.B);
                     EscSeqUtils.CSI_AppendBackgroundColorRGB (_stringBuilder, attr.Background.R, attr.Background.G, attr.Background.B);
+                    EscSeqUtils.CSI_AppendTextStyle (_stringBuilder, attr.TextStyles);
                 }
 
                 if (info.Char != '\x1b')

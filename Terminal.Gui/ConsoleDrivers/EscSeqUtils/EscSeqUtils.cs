@@ -1849,6 +1849,74 @@ public static class EscSeqUtils
 
     #endregion
 
+    #region TextStyles
+
+    /// <summary>
+    /// Appends an ANSI SGR (Select Graphic Rendition) escape sequence to apply the specified <see cref="TextStyle"/>.
+    /// </summary>
+    /// <param name="output">The <see cref="StringBuilder"/> to append the escape sequence to.</param>
+    /// <param name="textStyle">The <see cref="TextStyle"/> flags to apply.</param>
+    internal static void CSI_AppendTextStyle (StringBuilder output, TextStyle textStyle)
+    {
+        var sgr = new List<int> ();
+
+        if (textStyle == TextStyle.None)
+        {
+            sgr.Add (22); // Unset Bold / Faint
+            sgr.Add (23); // Unset Italic
+            sgr.Add (24); // Unset Underline
+            sgr.Add (25); // Unset Blink
+            sgr.Add (27); // Unset Reverse
+            sgr.Add (29); // Unset Strikethrough
+        }
+
+        if (textStyle.HasFlag (TextStyle.Bold))
+        {
+            sgr.Add (1);
+        }
+
+        if (textStyle.HasFlag (TextStyle.Faint))
+        {
+            sgr.Add (2);
+        }
+
+        if (textStyle.HasFlag (TextStyle.Italic))
+        {
+            sgr.Add (3);
+        }
+
+        if (textStyle.HasFlag (TextStyle.Underline))
+        {
+            sgr.Add (4);
+        }
+
+        if (textStyle.HasFlag (TextStyle.Blink))
+        {
+            sgr.Add (5);
+        }
+
+        if (textStyle.HasFlag (TextStyle.Reverse))
+        {
+            sgr.Add (7);
+        }
+
+        if (textStyle.HasFlag (TextStyle.Strikethrough))
+        {
+            sgr.Add (9);
+        }
+
+        if (sgr.Count == 0)
+        {
+            return;
+        }
+
+        output.Append ("\x1b[");
+        output.Append (string.Join (';', sgr));
+        output.Append ('m');
+    }
+
+    #endregion
+
     #region Requests
 
     /// <summary>

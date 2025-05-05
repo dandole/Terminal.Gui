@@ -20,7 +20,7 @@ public readonly record struct Attribute : IEqualityOperators<Attribute, Attribut
 {
     /// <summary>Default empty attribute.</summary>
     [JsonIgnore]
-    public static Attribute Default => new (Color.White, Color.Black);
+    public static Attribute Default => new (Color.White, Color.Black, TextStyle.None);
 
     /// <summary>The <see cref="IConsoleDriver"/>-specific color value.</summary>
     [JsonIgnore (Condition = JsonIgnoreCondition.Always)]
@@ -33,6 +33,9 @@ public readonly record struct Attribute : IEqualityOperators<Attribute, Attribut
     /// <summary>The background color.</summary>
     [JsonConverter (typeof (ColorJsonConverter))]
     public Color Background { get; }
+
+    /// <summary>The text styles.</summary>
+    public TextStyle TextStyles { get; init; } = TextStyle.None;
 
     /// <summary>Initializes a new instance with default values.</summary>
     public Attribute ()
@@ -69,6 +72,20 @@ public readonly record struct Attribute : IEqualityOperators<Attribute, Attribut
         PlatformColor = Application.Driver?.MakeColor(in foreground, in background).PlatformColor ?? -1;
     }
 
+    /// <summary>Initializes a new instance of the <see cref="Attribute"/> struct.</summary>
+    /// <param name="foreground">Foreground</param>
+    /// <param name="background">Background</param>
+    /// <param name="textStyles">TextStyles</param>
+    public Attribute (in Color foreground, in Color background, TextStyle textStyles)
+    {
+        Foreground = foreground;
+        Background = background;
+        TextStyles = textStyles;
+
+        // TODO: Once CursesDriver supports true color all the PlatformColor stuff goes away
+        PlatformColor = Application.Driver?.MakeColor (in foreground, in background).PlatformColor ?? -1;
+    }
+
     /// <summary>
     ///     Initializes a new instance with a <see cref="ColorName16"/> value. Both <see cref="Foreground"/> and
     ///     <see cref="Background"/> will be set to the specified color.
@@ -81,6 +98,14 @@ public readonly record struct Attribute : IEqualityOperators<Attribute, Attribut
     /// <param name="backgroundName">Background</param>
     public Attribute (in ColorName16 foregroundName, in ColorName16 backgroundName)
         : this (new Color (in foregroundName), new Color (in backgroundName))
+    { }
+
+    /// <summary>Initializes a new instance of the <see cref="Attribute"/> struct.</summary>
+    /// <param name="foregroundName">Foreground</param>
+    /// <param name="backgroundName">Background</param>
+    /// <param name="textStyles">TextStyles</param>
+    public Attribute (in ColorName16 foregroundName, in ColorName16 backgroundName, in TextStyle textStyles)
+        : this (new Color (in foregroundName), new Color (in backgroundName), textStyles)
     { }
 
     /// <summary>Initializes a new instance of the <see cref="Attribute"/> struct.</summary>
@@ -100,13 +125,34 @@ public readonly record struct Attribute : IEqualityOperators<Attribute, Attribut
     /// <param name="color">The color.</param>
     public Attribute (in Color color) : this (color, color) { }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="Attribute"/> struct with the same colors for the foreground and
+    ///     background.
+    /// </summary>
+    /// <param name="textStyles">The text styles.</param>
+    public Attribute (TextStyle textStyles)
+    {
+        this = Default with { PlatformColor = -1, TextStyles = textStyles };
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="Attribute"/> struct with the same colors for the foreground and
+    ///     background.
+    /// </summary>
+    /// <param name="attr">Attribute</param>
+    /// <param name="textStyles">The text styles.</param>
+    public Attribute (in Attribute attr, TextStyle textStyles)
+    {
+        this = attr with { TextStyles = textStyles };
+    }
+
     /// <inheritdoc/>
-    public override int GetHashCode () { return HashCode.Combine (PlatformColor, Foreground, Background); }
+    public override int GetHashCode () { return HashCode.Combine (PlatformColor, Foreground, Background, TextStyles); }
 
     /// <inheritdoc/>
     public override string ToString ()
     {
         // Note: Unit tests are dependent on this format
-        return $"[{Foreground},{Background}]";
+        return $"[{Foreground},{Background},{TextStyles}]";
     }
 }
