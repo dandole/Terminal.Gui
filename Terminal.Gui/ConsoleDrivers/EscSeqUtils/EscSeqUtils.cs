@@ -1869,42 +1869,69 @@ public static class EscSeqUtils
             sgr.Add (27); // Unset Reverse
             sgr.Add (29); // Unset Strikethrough
         }
-
-        if (textStyle.HasFlag (TextStyle.Bold))
+        else
         {
-            sgr.Add (1);
-        }
+            if (textStyle.HasFlag (TextStyle.Bold) || textStyle.HasFlag (TextStyle.Faint))
+            {
+                if (textStyle.HasFlag (TextStyle.Bold))
+                {
+                    sgr.Add (1); // set Bold
+                }
+                else
+                {
+                    sgr.Add (2); // set Faint
+                }
+            }
+            else
+            {
+                sgr.Add (22);  // unset Bold / Faint
+            }
 
-        if (textStyle.HasFlag (TextStyle.Faint))
-        {
-            sgr.Add (2);
-        }
+            if (textStyle.HasFlag (TextStyle.Italic))
+            {
+                sgr.Add (3);    // set Italic
+            }
+            else
+            {
+                sgr.Add (23);   // unset Italic
+            }
 
-        if (textStyle.HasFlag (TextStyle.Italic))
-        {
-            sgr.Add (3);
-        }
+            if (textStyle.HasFlag (TextStyle.Underline))
+            {
+                sgr.Add (4);    // set Underline
+            }
+            else
+            {
+                sgr.Add (24);   // unset Underline
+            }
 
-        if (textStyle.HasFlag (TextStyle.Underline))
-        {
-            sgr.Add (4);
-        }
+            if (textStyle.HasFlag (TextStyle.Blink))
+            {
+                sgr.Add (5);    // set Blink
+            }
+            else
+            {
+                sgr.Add (25);   // unset Blink
+            }
 
-        if (textStyle.HasFlag (TextStyle.Blink))
-        {
-            sgr.Add (5);
-        }
+            if (textStyle.HasFlag (TextStyle.Reverse))
+            {
+                sgr.Add (7);    // set Reverse
+            }
+            else
+            {
+                sgr.Add (27);   // unset Reverse
+            }
 
-        if (textStyle.HasFlag (TextStyle.Reverse))
-        {
-            sgr.Add (7);
+            if (textStyle.HasFlag (TextStyle.Strikethrough))
+            {
+                sgr.Add (9);    // set Strikethrough
+            }
+            else
+            {
+                sgr.Add (29);   // unset Strikethrough
+            }
         }
-
-        if (textStyle.HasFlag (TextStyle.Strikethrough))
-        {
-            sgr.Add (9);
-        }
-
         if (sgr.Count == 0)
         {
             return;
