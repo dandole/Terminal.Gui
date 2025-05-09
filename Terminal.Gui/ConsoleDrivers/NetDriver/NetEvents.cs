@@ -76,7 +76,7 @@ internal class NetEvents : IDisposable
 
         while (!_netEventsDisposed.IsCancellationRequested)
         {
-            Task.Delay (100, _netEventsDisposed.Token).Wait (_netEventsDisposed.Token);
+            Task.Delay (25, _netEventsDisposed.Token).Wait (_netEventsDisposed.Token);
 
             foreach (var k in ShouldReleaseParserHeldKeys ())
             {

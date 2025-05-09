@@ -85,7 +85,7 @@ internal partial class WindowsConsole
 
                 try
                 {
-                    Task.Delay (100, _inputReadyCancellationTokenSource.Token).Wait (_inputReadyCancellationTokenSource.Token);
+                    Task.Delay (25, _inputReadyCancellationTokenSource.Token).Wait (_inputReadyCancellationTokenSource.Token);
                 }
                 catch (OperationCanceledException)
                 {
